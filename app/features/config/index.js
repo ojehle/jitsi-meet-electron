@@ -44,5 +44,10 @@ export default {
     /**
      * The URL of Terms and Conditions Page.
      */
-    termsAndConditionsURL: 'https://jitsi.org/meet/terms'
+    termsAndConditionsURL: 'https://jitsi.org/meet/terms',
+
+    /**
+     * Disable Remote Control by default.
+     */
+    enableRemoteControl: false
 };

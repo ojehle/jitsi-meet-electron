@@ -7,7 +7,8 @@ import {
     SET_NAME,
     SET_SERVER_URL,
     SET_SERVER_TIMEOUT,
-    SET_VIDEO_MUTED
+    SET_VIDEO_MUTED,
+    SET_ENABLE_REMOTE_CONTROL
 } from './actionTypes';
 
 type State = {
@@ -17,7 +18,8 @@ type State = {
     serverURL: ?string,
     serverTimeout: ?number,
     startWithAudioMuted: boolean,
-    startWithVideoMuted: boolean
+    startWithVideoMuted: boolean,
+    enableRemoteControl: boolean
 };
 
 const username = window.jitsiNodeAPI.osUserInfo().username;
@@ -29,7 +31,8 @@ const DEFAULT_STATE = {
     serverURL: undefined,
     serverTimeout: undefined,
     startWithAudioMuted: false,
-    startWithVideoMuted: false
+    startWithVideoMuted: false,
+    enableRemoteControl: true
 };
 
 /**
@@ -81,6 +84,12 @@ export default (state: State = DEFAULT_STATE, action: Object) => {
         return {
             ...state,
             startWithVideoMuted: action.startWithVideoMuted
+        };
+
+    case SET_ENABLE_REMOTE_CONTROL:
+        return {
+            ...state,
+            enableRemoteControl: action.enableRemoteControl
         };
 
     default:

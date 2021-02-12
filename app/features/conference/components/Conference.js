@@ -15,7 +15,6 @@ import { conferenceEnded, conferenceJoined } from '../actions';
 import JitsiMeetExternalAPI from '../external_api';
 import { LoadingIndicator, Wrapper } from '../styled';
 
-const ENABLE_REMOTE_CONTROL = false;
 
 type Props = {
 
@@ -63,6 +62,11 @@ type Props = {
      * Start with Video Muted.
      */
     _startWithVideoMuted: boolean;
+
+    /**
+     * Enable Remote Control.
+     */
+    _enableRemoteControl: boolean;
 };
 
 type State = {
@@ -200,6 +204,8 @@ class Conference extends Component<Props, State> {
      * @returns {void}
      */
     _loadConference() {
+        let s1;
+        let s2;
         const url = new URL(this._conference.room, this._conference.serverURL);
         const roomName = url.pathname.split('/').pop();
         const host = this._conference.serverURL.replace(/https?:\/\//, '');
@@ -212,7 +218,8 @@ class Conference extends Component<Props, State> {
 
         const configOverwrite = {
             startWithAudioMuted: this.props._startWithAudioMuted,
-            startWithVideoMuted: this.props._startWithVideoMuted
+            startWithVideoMuted: this.props._startWithVideoMuted,
+            enableRemoteControl: this.props._enableRemoteControl
         };
 
         const options = {
@@ -251,7 +258,16 @@ class Conference extends Component<Props, State> {
 
         setupScreenSharingRender(this._api);
 
-        if (ENABLE_REMOTE_CONTROL) {
+        // Allow only on the configured server in settings the RemoteControl.
+        s1 = this.props._serverURL || config.defaultServerURL;
+        s2 = this._conference.serverURL;
+        if (s1.endsWith('/')) {
+            s1 = s1.slice(0, -1);
+        }
+        if (s2.endsWith('/')) {
+            s2 = s2.slice(0, -1);
+        }
+        if (this.props._enableRemoteControl && s1 === s2) {
             new RemoteControl(iframe); // eslint-disable-line no-new
         }
 
@@ -408,7 +424,8 @@ function _mapStateToProps(state: Object) {
         _serverURL: state.settings.serverURL,
         _serverTimeout: state.settings.serverTimeout,
         _startWithAudioMuted: state.settings.startWithAudioMuted,
-        _startWithVideoMuted: state.settings.startWithVideoMuted
+        _startWithVideoMuted: state.settings.startWithVideoMuted,
+        _enableRemoteControl: state.settings.enableRemoteControl
     };
 }
 
